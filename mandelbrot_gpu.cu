@@ -13,13 +13,13 @@ mandelbrot_gpu_scalar(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
     // TODO: Implement the kernel.
 }
 
+void launch_mandelbrot_gpu_scalar(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
+    // TODO: Launch the kernel.
+}
+
 __global__ void
 mandelbrot_gpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
     // TODO: Implement the kernel.
-}
-
-void launch_mandelbrot_gpu_scalar(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
-    // TODO: Launch the kernel.
 }
 
 void launch_mandelbrot_gpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
