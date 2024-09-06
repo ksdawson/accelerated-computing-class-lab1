@@ -8,22 +8,36 @@
 
 /// <--- your code here --->
 
-__global__ void
-mandelbrot_gpu_scalar(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
-    // TODO: Implement the kernel.
+__global__ void mandelbrot_gpu_scalar(
+    uint32_t img_size,
+    uint32_t max_iters,
+    uint32_t *out /* pointer to GPU memory */
+) {
+    /* your (GPU) code here... */
 }
 
-void launch_mandelbrot_gpu_scalar(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
-    // TODO: Launch the kernel.
+void launch_mandelbrot_gpu_scalar(
+    uint32_t img_size,
+    uint32_t max_iters,
+    uint32_t *out /* pointer to GPU memory */
+) {
+    /* your (CPU) code here... */
 }
 
-__global__ void
-mandelbrot_gpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
-    // TODO: Implement the kernel.
+__global__ void mandelbrot_gpu_vector(
+    uint32_t img_size,
+    uint32_t max_iters,
+    uint32_t *out /* pointer to GPU memory */
+) {
+    /* your (GPU) code here... */
 }
 
-void launch_mandelbrot_gpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out) {
-    // TODO: Launch the kernel.
+void launch_mandelbrot_gpu_vector(
+    uint32_t img_size,
+    uint32_t max_iters,
+    uint32_t *out /* pointer to GPU memory */
+) {
+    /* your (CPU) code here... */
 }
 
 /// <--- /your code here --->
