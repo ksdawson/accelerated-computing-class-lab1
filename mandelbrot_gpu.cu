@@ -51,6 +51,10 @@ int ParseArgsAndMakeSpec(
         if (strcmp(argv[i], "-r") == 0) {
             if (i + 1 < argc) {
                 *img_size = atoi(argv[++i]);
+                if (*img_size % 32 != 0) {
+                    std::cerr << "Error: Image width must be a multiple of 32" << std::endl;
+                    return 1;
+                }
             } else {
                 std::cerr << "Error: No value specified for -r" << std::endl;
                 return 1;
