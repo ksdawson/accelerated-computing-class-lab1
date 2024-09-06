@@ -77,7 +77,8 @@ int ParseArgsAndMakeSpec(
             if (i + 1 < argc) {
                 *img_size = atoi(argv[++i]);
                 if (*img_size % 32 != 0) {
-                    std::cerr << "Error: Image width must be a multiple of 32" << std::endl;
+                    std::cerr << "Error: Image width must be a multiple of 32"
+                              << std::endl;
                     return 1;
                 }
             } else {
@@ -139,7 +140,7 @@ struct BMPHeader {
 };
 #pragma pack(pop)
 
-void writeBMP(uint32_t img_size, const std::vector<uint8_t> &pixelData) {
+void writeBMP(const char *fname, uint32_t img_size, const std::vector<uint8_t> &pixels) {
     uint32_t width = img_size;
     uint32_t height = img_size;
 
@@ -149,10 +150,9 @@ void writeBMP(uint32_t img_size, const std::vector<uint8_t> &pixelData) {
     header.imageSize = width * height * 3;
     header.fileSize = header.dataOffset + header.imageSize;
 
-    const char kOutputFileName[] = "out/mandelbrot.bmp";
-    std::ofstream file(kOutputFileName, std::ios::binary);
+    std::ofstream file(fname, std::ios::binary);
     file.write(reinterpret_cast<const char *>(&header), sizeof(header));
-    file.write(reinterpret_cast<const char *>(pixelData.data()), pixelData.size());
+    file.write(reinterpret_cast<const char *>(pixels.data()), pixels.size());
 }
 
 std::vector<uint8_t> iters_to_colors(
@@ -221,6 +221,16 @@ double difference(
     return diff / double(img_size * img_size * max_iters);
 }
 
+void dump_image(
+    const char *fname,
+    uint32_t img_size,
+    uint32_t max_iters,
+    const std::vector<uint32_t> &iters) {
+    // Dump result as an image.
+    auto pixel_data = iters_to_colors(img_size, max_iters, iters);
+    writeBMP(fname, img_size, pixel_data);
+}
+
 // Main function.
 // Compile with:
 //  g++ -march=native -O3 -Wall -Wextra -o mandelbrot mandelbrot_cpu.cc
@@ -243,19 +253,17 @@ int main(int argc, char *argv[]) {
     if (impl == SCALAR || impl == ALL) {
         memset(result.data(), 0, sizeof(uint32_t) * img_size * img_size);
         BENCHPRESS(mandelbrot_cpu_scalar, img_size, max_iters, result.data());
+        dump_image("out/mandelbrot_cpu_scalar.bmp", img_size, max_iters, result);
     }
 
     if (impl == VECTOR || impl == ALL) {
         memset(result.data(), 0, sizeof(uint32_t) * img_size * img_size);
         BENCHPRESS(mandelbrot_cpu_vector, img_size, max_iters, result.data());
+        dump_image("out/mandelbrot_cpu_vector.bmp", img_size, max_iters, result);
 
         std::cout << "  Correctness: average output difference from reference = "
                   << difference(img_size, max_iters, result, ref_result) << std::endl;
     }
-
-    // Dump result as an image.
-    auto pixel_data = iters_to_colors(img_size, max_iters, result);
-    writeBMP(img_size, pixel_data);
 
     return 0;
 }
