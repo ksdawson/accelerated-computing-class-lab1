@@ -98,6 +98,10 @@ void mandelbrot_cpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out)
                 // Update x2, y2, and w for all vectors
                 __m512 x_vector = _mm512_add_ps(_mm512_sub_ps(x2_vector, y2_vector), cx_vector);
                 __m512 y_vector =_mm512_add_ps(_mm512_sub_ps(_mm512_sub_ps(w_vector, x2_vector), y2_vector), cy_vector);
+                // This reordering is 0.2ms faster but causes some error due to reordering of floating point ops (only pos bc cpu doesnt use -ffast-math)
+                // __m512 ya_vector = _mm512_add_ps(w_vector, cy_vector);
+                // __m512 yb_vector = _mm512_add_ps(x2_vector, y2_vector);
+                // __m512 y_vector = _mm512_sub_ps(ya_vector, yb_vector);
                 x2_vector = _mm512_mul_ps(x_vector, x_vector);
                 y2_vector = _mm512_mul_ps(y_vector, y_vector);
                 __m512 z_vector = _mm512_add_ps(x_vector, y_vector);
