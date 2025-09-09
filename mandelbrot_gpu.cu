@@ -53,10 +53,8 @@ __global__ void mandelbrot_gpu_vector(
     uint32_t max_iters,
     uint32_t *out /* pointer to GPU memory */
 ) {
-    uint32_t vector_size = img_size / 32;
-    uint32_t block_index = threadIdx.x * vector_size;
     for (uint64_t i = 0; i < img_size; ++i) {
-        for (uint64_t j = block_index; j < block_index + vector_size; ++j) {
+        for (uint64_t j = threadIdx.x; j < img_size; j += 32) {
             // Get the plane coordinate X for the image pixel.
             float cx = (float(j) / float(img_size)) * 2.5f - 2.0f;
             float cy = (float(i) / float(img_size)) * 2.5f - 1.25f;
