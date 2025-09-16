@@ -48,8 +48,8 @@ void mandelbrot_cpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out)
 
     // Vector constants
     __m512 _4p0_vector = _mm512_set1_ps(4.0f);
-    __m512 _1_vector = _mm512_set1_epi32(1);
-    __m512 max_iters_vector = _mm512_set1_epi32(max_iters);
+    __m512i _1_vector = _mm512_set1_epi32(1);
+    __m512i max_iters_vector = _mm512_set1_epi32(max_iters);
 
     // Comparison operator values
     const int lt = 1;
@@ -90,7 +90,7 @@ void mandelbrot_cpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out)
             __m512 x2_plus_y2_vector = _mm512_add_ps(x2_vector, y2_vector);
             __mmask16 x2_plus_y2_cmp_mask = _mm512_cmp_ps_mask(x2_plus_y2_vector, _4p0_vector, leq);
             // iters < max_iters while condition
-            __mmask16 iters_cmp_mask = _mm512_cmp_ps_mask(iters_vector, max_iters_vector, lt);
+            __mmask16 iters_cmp_mask = _mm512_cmp_epi32_mask(iters_vector, max_iters_vector, lt);
             // Overall mask
             __mmask16 while_condition_mask = x2_plus_y2_cmp_mask & iters_cmp_mask;
             
@@ -113,7 +113,7 @@ void mandelbrot_cpu_vector(uint32_t img_size, uint32_t max_iters, uint32_t *out)
                 // Update the while mask
                 x2_plus_y2_vector = _mm512_add_ps(x2_vector, y2_vector);
                 x2_plus_y2_cmp_mask = _mm512_cmp_ps_mask(x2_plus_y2_vector, _4p0_vector, leq);
-                iters_cmp_mask = _mm512_cmp_ps_mask(iters_vector, max_iters_vector, lt);
+                iters_cmp_mask = _mm512_cmp_epi32_mask(iters_vector, max_iters_vector, lt);
                 while_condition_mask = x2_plus_y2_cmp_mask & iters_cmp_mask;
             }
 
